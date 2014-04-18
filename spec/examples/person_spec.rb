@@ -62,6 +62,22 @@ describe GooglePlus::Person do
         acts.items.should be_nil
       end
 
+      context "getting a list of people in the person's circle" do
+        it 'makes a new cursor for the right API endpoint' do
+          GooglePlus::Cursor.should_receive(:new) do |arg1, arg2, arg3, arg4|
+            arg2.should == :get
+            arg3.should == "people/105735510282572548726/people/visible"
+          end
+
+          GooglePlus::Person.circled_by_list('105735510282572548726')
+        end
+
+        it 'should get a list of people that have circled the person' do
+          RestClient.should_receive(:get).and_return(people_in_circle_json_response)
+          people_list = GooglePlus::Person.circled_by_list('105735510282572548726')
+          people_list.items.first.should be_a(GooglePlus::Person)
+        end
+      end
     end
 
   end

@@ -17,6 +17,10 @@ module GooglePlus
       Person.new(JSON.parse(data)) if data
     end
 
+    def self.circled_by_list(user_id, params = {})
+      GooglePlus::Cursor.new(self, :get, "people/#{user_id}/people/visible", params)
+    end
+
     # Search for a person
     # @param [String] query The query string to search for
     # @option params [Symbol] :key A different API key to use for this request
